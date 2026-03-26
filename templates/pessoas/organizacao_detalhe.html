@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}{{ organizacao }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">{{ organizacao }}</h4>
+    <div class="d-flex gap-2">
+        <a href="{% url 'pessoas:organizacao_editar' organizacao.pk %}" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        <a href="{% url 'pessoas:organizacao_lista' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+<div class="card mb-3">
+    <div class="card-header fw-bold">Dados da Organização</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4"><strong>Nome:</strong> {{ organizacao.nome }}</div>
+            <div class="col-md-2"><strong>Sigla:</strong> {{ organizacao.sigla|default:"—" }}</div>
+            <div class="col-md-3"><strong>Tipo:</strong> {{ organizacao.get_tipo_display|default:"—" }}</div>
+            <div class="col-md-3"><strong>Situação:</strong> {{ organizacao.get_situacao_display }}</div>
+            <div class="col-md-4 mt-2"><strong>Área de atuação:</strong> {{ organizacao.area_atuacao|default:"—" }}</div>
+            <div class="col-md-4 mt-2"><strong>Fundação:</strong> {{ organizacao.data_fundacao|date:"d/m/Y"|default:"—" }}</div>
+            <div class="col-md-4 mt-2"><strong>Site:</strong>
+                {% if organizacao.site %}
+                    <a href="{{ organizacao.site }}" target="_blank">{{ organizacao.site }}</a>
+                {% else %}—{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% if organizacao.pessoas.exists %}
+<div class="card mb-3">
+    <div class="card-header fw-bold">Pessoas vinculadas</div>
+    <div class="card-body">
+        {% for p in organizacao.pessoas.all %}
+            <a href="{% url 'pessoas:detalhe' p.pk %}"
+               class="badge bg-primary text-decoration-none me-1">
+                {{ p.nome_completo }}
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% if organizacao.organizacoes_vinculadas.exists %}
+<div class="card mb-3">
+    <div class="card-header fw-bold">Organizações vinculadas</div>
+    <div class="card-body">
+        {% for o in organizacao.organizacoes_vinculadas.all %}
+            <a href="{% url 'pessoas:organizacao_detalhe' o.pk %}"
+               class="badge bg-success text-decoration-none me-1">
+                {{ o }}
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% if organizacao.observacoes %}
+<div class="card">
+    <div class="card-header fw-bold">Observações</div>
+    <div class="card-body">{{ organizacao.observacoes|linebreaks }}</div>
+</div>
+{% endif %}
+{% endblock %}
+

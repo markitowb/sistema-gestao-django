@@ -1,0 +1,28 @@
+# Ambiente virtual
+venv/
+
+# Variáveis de ambiente e segredos
+.env
+
+# Arquivos de mídia (uploads dos usuários)]
+media/
+
+# Arquivos estáticos coletados para aplicação rodar localmente
+staticfiles/
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Banco de dados SQLite
+db.sqlite3
+*.sqlite3
+
+# VS Code
+.vscode/
+
+# Scripts temporários
+baixar_estaticos.py
+baixar_select2.py
+backup.bat

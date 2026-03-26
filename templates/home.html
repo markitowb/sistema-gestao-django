@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% block title %}Início — Sistema de Gestão{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">
+        <i class="bi bi-speedometer2"></i> Dashboard
+    </h4>
+    <small class="text-muted">
+        Bem-vindo, <strong>{{ user.get_full_name|default:user.username }}</strong>
+    </small>
+</div>
+
+<!-- Totais -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <a href="{% url 'pessoas:lista' %}" class="text-decoration-none">
+            <div class="card border-primary h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <i class="bi bi-people fs-1 text-primary"></i>
+                    <div>
+                        <div class="fs-2 fw-bold text-primary">{{ total_pessoas }}</div>
+                        <div class="text-muted small">Pessoas</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{% url 'pessoas:empresa_lista' %}" class="text-decoration-none">
+            <div class="card border-success h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <i class="bi bi-building fs-1 text-success"></i>
+                    <div>
+                        <div class="fs-2 fw-bold text-success">{{ total_empresas }}</div>
+                        <div class="text-muted small">Empresas</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{% url 'pessoas:organizacao_lista' %}" class="text-decoration-none">
+            <div class="card border-warning h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <i class="bi bi-diagram-3 fs-1 text-warning"></i>
+                    <div>
+                        <div class="fs-2 fw-bold text-warning">{{ total_organizacoes }}</div>
+                        <div class="text-muted small">Organizações</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{% url 'documentos:lista' %}" class="text-decoration-none">
+            <div class="card border-danger h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <i class="bi bi-file-earmark-text fs-1 text-danger"></i>
+                    <div>
+                        <div class="fs-2 fw-bold text-danger">{{ total_documentos }}</div>
+                        <div class="text-muted small">Documentos</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <a href="{% url 'registros:fato_lista' %}" class="text-decoration-none">
+            <div class="card border-secondary h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <i class="bi bi-calendar-event fs-1 text-secondary"></i>
+                    <div>
+                        <div class="fs-2 fw-bold text-secondary">{{ total_fatos }}</div>
+                        <div class="text-muted small">Fatos</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="{% url 'registros:relatorio_lista' %}" class="text-decoration-none">
+            <div class="card border-info h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <i class="bi bi-journal-text fs-1 text-info"></i>
+                    <div>
+                        <div class="fs-2 fw-bold text-info">{{ total_relatorios }}</div>
+                        <div class="text-muted small">Relatórios</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="{% url 'registros:memoria_lista' %}" class="text-decoration-none">
+            <div class="card h-100" style="border-color: #8e44ad;">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <i class="bi bi-bookmark-star fs-1" style="color:#8e44ad;"></i>
+                    <div>
+                        <div class="fs-2 fw-bold" style="color:#8e44ad;">{{ total_memorias }}</div>
+                        <div class="text-muted small">Memórias</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Memórias fixadas -->
+{% if memorias_fixadas %}
+<div class="card mb-4 border-warning">
+    <div class="card-header bg-warning bg-opacity-10 fw-bold">
+        <i class="bi bi-pin-angle-fill text-warning"></i> Memórias Fixadas
+    </div>
+    <div class="card-body">
+        <div class="row g-2">
+            {% for memoria in memorias_fixadas %}
+            <div class="col-md-4">
+                <div class="card border-0 bg-light h-100">
+                    <div class="card-body py-2">
+                        <a href="{% url 'registros:memoria_detalhe' memoria.pk %}"
+                           class="fw-bold text-decoration-none">
+                            {{ memoria.titulo }}
+                        </a>
+                        <p class="text-muted small mt-1 mb-0">
+                            {{ memoria.conteudo|truncatewords:12 }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Atividade recente -->
+<div class="row g-3">
+
+    <!-- Pessoas recentes -->
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header fw-bold">
+                <i class="bi bi-clock-history text-primary"></i> Pessoas recentes
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for p in pessoas_recentes %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% url 'pessoas:detalhe' p.pk %}" class="text-decoration-none">
+                        {{ p.nome_completo|truncatechars:28 }}
+                    </a>
+                    <small class="text-muted">{{ p.criado_em|date:"d/m" }}</small>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted small">Nenhuma pessoa cadastrada.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Fatos recentes -->
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header fw-bold">
+                <i class="bi bi-clock-history text-secondary"></i> Fatos recentes
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for f in fatos_recentes %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% url 'registros:fato_detalhe' f.pk %}" class="text-decoration-none">
+                        {{ f.titulo|truncatechars:28 }}
+                    </a>
+                    <small class="text-muted">{{ f.data_fato|date:"d/m" }}</small>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted small">Nenhum fato registrado.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Documentos recentes -->
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header fw-bold">
+                <i class="bi bi-clock-history text-danger"></i> Documentos recentes
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for doc in docs_recentes %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% url 'documentos:detalhe' doc.pk %}" class="text-decoration-none">
+                        {{ doc.titulo|truncatechars:28 }}
+                    </a>
+                    <small class="text-muted">
+                        <span class="badge bg-secondary">{{ doc.get_tipo_display }}</span>
+                    </small>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted small">Nenhum documento cadastrado.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

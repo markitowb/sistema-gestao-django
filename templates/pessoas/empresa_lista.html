@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Empresas{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="bi bi-building"></i> Empresas</h4>
+    <a href="{% url 'pessoas:empresa_criar' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Nova Empresa
+    </a>
+</div>
+<form method="get" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="q" class="form-control"
+               placeholder="Buscar por razão social..." value="{{ query }}">
+        <button class="btn btn-outline-secondary" type="submit">
+            <i class="bi bi-search"></i> Buscar
+        </button>
+        {% if query %}
+            <a href="{% url 'pessoas:empresa_lista' %}" class="btn btn-outline-danger">
+                <i class="bi bi-x"></i> Limpar
+            </a>
+        {% endif %}
+    </div>
+</form>
+{% if empresas %}
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Razão Social</th>
+                <th>CNPJ</th>
+                <th>Situação</th>
+                <th>Cidade/UF</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for empresa in empresas %}
+            <tr>
+                <td>
+                    <a href="{% url 'pessoas:empresa_detalhe' empresa.pk %}">
+                        {{ empresa }}
+                    </a>
+                </td>
+                <td>{{ empresa.cnpj|default:"—" }}</td>
+                <td><span class="badge bg-{% if empresa.situacao == 'AT' %}success{% else %}secondary{% endif %}">
+                    {{ empresa.get_situacao_display }}</span>
+                </td>
+                <td>{{ empresa.cidade|default:"—" }}{% if empresa.estado %}/{{ empresa.estado }}{% endif %}</td>
+                <td class="text-center">
+                    <a href="{% url 'pessoas:empresa_editar' empresa.pk %}"
+                       class="btn btn-sm btn-outline-primary me-1">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="{% url 'pessoas:empresa_excluir' empresa.pk %}"
+                       class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<small class="text-muted">{{ empresas.count }} registro(s) encontrado(s)</small>
+{% else %}
+<div class="alert alert-info">
+    {% if query %}Nenhuma empresa encontrada para "<strong>{{ query }}</strong>".
+    {% else %}Nenhuma empresa cadastrada ainda.
+        <a href="{% url 'pessoas:empresa_criar' %}">Cadastre a primeira!</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

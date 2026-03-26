@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}{{ empresa }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">{{ empresa }}</h4>
+    <div class="d-flex gap-2">
+        <a href="{% url 'pessoas:empresa_editar' empresa.pk %}" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        <a href="{% url 'pessoas:empresa_lista' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+<div class="card mb-3">
+    <div class="card-header fw-bold">Dados da Empresa</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4"><strong>Razão social:</strong> {{ empresa.razao_social }}</div>
+            <div class="col-md-4"><strong>Nome fantasia:</strong> {{ empresa.nome_fantasia|default:"—" }}</div>
+            <div class="col-md-4"><strong>CNPJ:</strong> {{ empresa.cnpj|default:"—" }}</div>
+            <div class="col-md-4 mt-2"><strong>Porte:</strong> {{ empresa.get_porte_display|default:"—" }}</div>
+            <div class="col-md-4 mt-2"><strong>Situação:</strong> {{ empresa.get_situacao_display }}</div>
+            <div class="col-md-4 mt-2"><strong>Fundação:</strong> {{ empresa.data_fundacao|date:"d/m/Y"|default:"—" }}</div>
+        </div>
+    </div>
+</div>
+{% if empresa.pessoas.exists %}
+<div class="card mb-3">
+    <div class="card-header fw-bold">Pessoas vinculadas</div>
+    <div class="card-body">
+        {% for p in empresa.pessoas.all %}
+            <a href="{% url 'pessoas:detalhe' p.pk %}" class="badge bg-primary text-decoration-none me-1">
+                {{ p.nome_completo }}
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% if empresa.observacoes %}
+<div class="card">
+    <div class="card-header fw-bold">Observações</div>
+    <div class="card-body">{{ empresa.observacoes|linebreaks }}</div>
+</div>
+{% endif %}
+{% endblock %}

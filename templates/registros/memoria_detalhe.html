@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}{{ memoria.titulo }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">
+        {% if memoria.fixada %}
+            <i class="bi bi-pin-fill text-warning me-2"></i>
+        {% endif %}
+        {{ memoria.titulo }}
+    </h4>
+    <div class="d-flex gap-2">
+        <!--Adicionado aqui o botão para gerar PDF-->
+        <a href="{% url 'pdf_memoria' memoria.pk %}" target="_blank" class="btn btn-outline-danger">
+            <i class="bi bi-file-earmark-pdf"></i> Gerar PDF
+        </a>
+        <a href="{% url 'registros:memoria_editar' memoria.pk %}" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        <a href="{% url 'registros:memoria_lista' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+<div class="card mb-3">
+    <div class="card-header fw-bold">Conteúdo</div>
+    <div class="card-body">
+        {% if memoria.data_memoria %}
+            <small class="text-muted d-block mb-3">
+                Data: {{ memoria.data_memoria|date:"d/m/Y" }}
+            </small>
+        {% endif %}
+        <div class="p-3 bg-light rounded">
+            {{ memoria.conteudo|linebreaks }}
+        </div>
+    </div>
+</div>
+{% if memoria.pessoas.exists or memoria.empresas.exists or memoria.organizacoes.exists %}
+<div class="card mb-3">
+    <div class="card-header fw-bold">Vínculos</div>
+    <div class="card-body">
+        {% if memoria.pessoas.exists %}
+            <strong>Pessoas:</strong>
+            {% for p in memoria.pessoas.all %}
+                <a href="{% url 'pessoas:detalhe' p.pk %}"
+                   class="badge bg-primary text-decoration-none me-1">{{ p }}</a>
+            {% endfor %}<br>
+        {% endif %}
+        {% if memoria.empresas.exists %}
+            <strong class="mt-2 d-block">Empresas:</strong>
+            {% for e in memoria.empresas.all %}
+                <a href="{% url 'pessoas:empresa_detalhe' e.pk %}"
+                   class="badge bg-success text-decoration-none me-1">{{ e }}</a>
+            {% endfor %}
+        {% endif %}
+        {% if memoria.organizacoes.exists %}
+            <strong class="mt-2 d-block">Organizações:</strong>
+            {% for o in memoria.organizacoes.all %}
+                <a href="{% url 'pessoas:organizacao_detalhe' o.pk %}"
+                   class="badge bg-warning text-decoration-none me-1">{{ o }}</a>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+<small class="text-muted">
+    Criado por {{ memoria.criado_por|default:"—" }} em {{ memoria.criado_em|date:"d/m/Y H:i" }}
+</small>
+{% endblock %}
+

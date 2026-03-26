@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Documentos{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="bi bi-file-earmark-text"></i> Documentos</h4>
+    <a href="{% url 'documentos:criar' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Novo Documento
+    </a>
+</div>
+
+<!-- Filtros -->
+<form method="get" class="mb-4">
+    <div class="row g-2">
+        <div class="col-md-8">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control"
+                       placeholder="Buscar por título..." value="{{ query }}">
+                <button class="btn btn-outline-secondary" type="submit">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select name="tipo" class="form-select" onchange="this.form.submit()">
+                <option value="">Todos os tipos</option>
+                {% for valor, label in tipo_choices %}
+                    <option value="{{ valor }}" {% if tipo == valor %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-1">
+            {% if query or tipo %}
+                <a href="{% url 'documentos:lista' %}" class="btn btn-outline-danger w-100">
+                    <i class="bi bi-x"></i>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</form>
+
+{% if documentos %}
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Título</th>
+                <th>Tipo</th>
+                <th>Categoria</th>
+                <th>Data</th>
+                <th>Enviado por</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in documentos %}
+            <tr>
+                <td>
+                    <a href="{% url 'documentos:detalhe' doc.pk %}">
+                        {{ doc.titulo }}
+                    </a>
+                </td>
+                <td>
+                    <span class="badge bg-secondary">{{ doc.get_tipo_display }}</span>
+                </td>
+                <td>{{ doc.get_categoria_display|default:"—" }}</td>
+                <td>{{ doc.data_documento|date:"d/m/Y"|default:"—" }}</td>
+                <td>{{ doc.criado_por|default:"—" }}</td>
+                <td class="text-center">
+                    <a href="{{ doc.arquivo.url }}" target="_blank"
+                       class="btn btn-sm btn-outline-success me-1" title="Abrir arquivo">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{% url 'documentos:editar' doc.pk %}"
+                       class="btn btn-sm btn-outline-primary me-1">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="{% url 'documentos:excluir' doc.pk %}"
+                       class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<small class="text-muted">{{ documentos.count }} documento(s) encontrado(s)</small>
+{% else %}
+<div class="alert alert-info">
+    {% if query or tipo %}
+        Nenhum documento encontrado com os filtros aplicados.
+    {% else %}
+        Nenhum documento cadastrado ainda.
+        <a href="{% url 'documentos:criar' %}">Cadastre o primeiro!</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
+

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}{{ documento.titulo }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">{{ documento.titulo }}</h4>
+    <div class="d-flex gap-2">
+        <a href="{{ documento.arquivo.url }}" target="_blank" class="btn btn-success">
+            <i class="bi bi-eye"></i> Abrir arquivo
+        </a>
+        <a href="{% url 'documentos:editar' documento.pk %}" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        <a href="{% url 'documentos:lista' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+<div class="card mb-3">
+    <div class="card-header fw-bold">Dados do Documento</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3"><strong>Tipo:</strong>
+                <span class="badge bg-secondary">{{ documento.get_tipo_display }}</span>
+            </div>
+            <div class="col-md-3"><strong>Categoria:</strong> {{ documento.get_categoria_display|default:"—" }}</div>
+            <div class="col-md-3"><strong>Data:</strong> {{ documento.data_documento|date:"d/m/Y"|default:"—" }}</div>
+            <div class="col-md-3"><strong>Enviado por:</strong> {{ documento.criado_por|default:"—" }}</div>
+        </div>
+        {% if documento.descricao %}
+            <div class="mt-3">
+                <strong>Descrição:</strong>
+                <p class="mt-1 text-muted">{{ documento.descricao }}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Preview para imagens -->
+{% if documento.tipo == 'IMG' %}
+<div class="card mb-3">
+    <div class="card-header fw-bold">Visualização</div>
+    <div class="card-body text-center">
+        <img src="{{ documento.arquivo.url }}" class="img-fluid rounded"
+             style="max-height: 500px;" alt="{{ documento.titulo }}">
+    </div>
+</div>
+{% endif %}
+
+{% if documento.pessoas.exists or documento.empresas.exists or documento.organizacoes.exists %}
+<div class="card mb-3">
+    <div class="card-header fw-bold">Vínculos</div>
+    <div class="card-body">
+        {% if documento.pessoas.exists %}
+            <strong>Pessoas:</strong>
+            {% for p in documento.pessoas.all %}
+                <a href="{% url 'pessoas:detalhe' p.pk %}"
+                   class="badge bg-primary text-decoration-none me-1">{{ p }}</a>
+            {% endfor %}<br>
+        {% endif %}
+        {% if documento.empresas.exists %}
+            <strong class="mt-2 d-block">Empresas:</strong>
+            {% for e in documento.empresas.all %}
+                <a href="{% url 'pessoas:empresa_detalhe' e.pk %}"
+                   class="badge bg-success text-decoration-none me-1">{{ e }}</a>
+            {% endfor %}
+        {% endif %}
+        {% if documento.organizacoes.exists %}
+            <strong class="mt-2 d-block">Organizações:</strong>
+            {% for o in documento.organizacoes.all %}
+                <a href="{% url 'pessoas:organizacao_detalhe' o.pk %}"
+                   class="badge bg-warning text-decoration-none me-1">{{ o }}</a>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+<small class="text-muted">
+    Cadastrado em {{ documento.criado_em|date:"d/m/Y H:i" }}
+</small>
+{% endblock %}
+

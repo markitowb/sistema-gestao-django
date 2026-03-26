@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="bi bi-calendar-event"></i> {{ titulo }}</h4>
+    <a href="{% url 'registros:fato_lista' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+<form method="post">
+    {% csrf_token %}
+    <div class="card mb-3">
+        <div class="card-header fw-bold">Dados do Fato</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-8"><label class="form-label">Título *</label>{{ form.titulo }}</div>
+                <div class="col-md-4"><label class="form-label">Tipo</label>{{ form.tipo }}</div>
+                <div class="col-md-6"><label class="form-label">Data/hora do fato *</label>{{ form.data_fato }}</div>
+                <div class="col-md-6"><label class="form-label">Local</label>{{ form.local }}</div>
+                <div class="col-md-12"><label class="form-label">Descrição *</label>{{ form.descricao }}</div>
+                <div class="col-md-8"><label class="form-label">Fonte</label>{{ form.fonte }}</div>
+                <div class="col-md-4 d-flex align-items-end pb-2">
+                    <div class="form-check">
+                        {{ form.confidencial }}
+                        <label class="form-check-label ms-2">Confidencial</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header fw-bold">Vínculos</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Pessoas envolvidas</label>
+                    {{ form.pessoas }}
+                    <small class="text-muted">Segure Ctrl para selecionar mais de uma</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Empresas envolvidas</label>
+                    {{ form.empresas }}
+                    <small class="text-muted">Segure Ctrl para selecionar mais de uma</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Organizações envolvidas</label>
+                    {{ form.organizacoes }}
+                    <small class="text-muted">Segure Ctrl para selecionar mais de uma</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Documentos relacionados</label>
+                    {{ form.documentos }}
+                    <small class="text-muted">Segure Ctrl para selecionar mais de uma</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Salvar</button>
+        <a href="{% url 'registros:fato_lista' %}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
+

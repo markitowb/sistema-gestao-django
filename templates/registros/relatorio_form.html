@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="bi bi-journal-text"></i> {{ titulo }}</h4>
+    <a href="{% url 'registros:relatorio_lista' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+<form method="post">
+    {% csrf_token %}
+    <div class="card mb-3">
+        <div class="card-header fw-bold">Dados do Relatório</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label class="form-label">Título *</label>
+                    {{ form.titulo }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Data de referência</label>
+                    {{ form.data_referencia }}
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Conteúdo *</label>
+                    {{ form.conteudo }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header fw-bold">Vínculos</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Pessoas relacionadas</label>
+                    {{ form.pessoas }}
+                    <small class="text-muted">Segure Ctrl para selecionar mais de uma</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Empresas relacionadas</label>
+                    {{ form.empresas }}
+                    <small class="text-muted">Segure Ctrl para selecionar mais de uma</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Organizações relacionadas</label>
+                    {{ form.organizacoes }}
+                    <small class="text-muted">Segure Ctrl para selecionar mais de uma</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Fatos relacionados</label>
+                    {{ form.fatos }}
+                    <small class="text-muted">Segure Ctrl para selecionar mais de uma</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Documentos relacionados</label>
+                    {{ form.documentos }}
+                    <small class="text-muted">Segure Ctrl para selecionar mais de uma</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-lg"></i> Salvar
+        </button>
+        <a href="{% url 'registros:relatorio_lista' %}" class="btn btn-outline-secondary">
+            Cancelar
+        </a>
+    </div>
+</form>
+{% endblock %}
+

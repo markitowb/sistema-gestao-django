@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="bi bi-file-earmark-arrow-up"></i> {{ titulo }}</h4>
+    <a href="{% url 'documentos:lista' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="card mb-3">
+        <div class="card-header fw-bold">Dados do Documento</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label class="form-label">Título *</label>
+                    {{ form.titulo }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Data do documento</label>
+                    {{ form.data_documento }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Tipo *</label>
+                    {{ form.tipo }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Categoria</label>
+                    {{ form.categoria }}
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Descrição</label>
+                    {{ form.descricao }}
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Arquivo *</label>
+                    {{ form.arquivo }}
+                    {% if documento.arquivo %}
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                Arquivo atual:
+                                <a href="{{ documento.arquivo.url }}" target="_blank">
+                                    {{ documento.arquivo.name|cut:"documentos/" }}
+                                </a>
+                                — deixe em branco para manter o atual.
+                            </small>
+                        </div>
+                    {% endif %}
+                    <small class="text-muted d-block mt-1">
+                        Formatos aceitos: PDF, Word, Excel, ODT, imagens e outros.
+                        Tamanho máximo recomendado: 50 MB.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header fw-bold">Vínculos</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Pessoas relacionadas</label>
+                    {{ form.pessoas }}
+                    <!-- Comentado para não atrapalhar a seleção!-->                        
+                    <!--<small class="text-muted">Segure Ctrl para selecionar mais de uma</small>-->
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Empresas relacionadas</label>
+                    {{ form.empresas }}
+                    <!-- Comentado para não atrapalhar a seleção!-->
+                    <!--<small class="text-muted">Segure Ctrl para selecionar mais de uma</small>-->
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Organizações relacionadas</label>
+                    {{ form.organizacoes }}
+                    <!-- Comentado para não atrapalhar a seleção!-->
+                    <!--<small class="text-muted">Segure Ctrl para selecionar mais de uma</small>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-lg"></i> Salvar
+        </button>
+        <a href="{% url 'documentos:lista' %}" class="btn btn-outline-secondary">
+            Cancelar
+        </a>
+    </div>
+</form>
+{% endblock %}
+

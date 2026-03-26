@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}{{ pessoa.nome_completo }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">{{ pessoa.nome_completo }}</h4>
+    <div class="d-flex gap-2">
+        <!--Adicionado aqui o botão para gerar PDF-->
+        <a href="{% url 'pdf_pessoa' pessoa.pk %}" target="_blank" class="btn btn-outline-danger">
+            <i class="bi bi-file-earmark-pdf"></i> Gerar PDF
+        </a>
+        <a href="{% url 'pessoas:editar' pessoa.pk %}" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        <a href="{% url 'pessoas:lista' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-3 text-center">
+        {% if pessoa.foto %}
+            <img src="{{ pessoa.foto.url }}" class="img-fluid rounded-circle mb-3"
+                 style="width:150px;height:150px;object-fit:cover;">
+        {% else %}
+            <div class="bg-secondary rounded-circle d-flex align-items-center
+                        justify-content-center mx-auto mb-3"
+                 style="width:150px;height:150px;">
+                <i class="bi bi-person text-white" style="font-size:4rem;"></i>
+            </div>
+        {% endif %}
+        <h5>{{ pessoa.nome_completo }}</h5>
+        {% if pessoa.nome_social %}
+            <small class="text-muted">{{ pessoa.nome_social }}</small>
+        {% endif %}
+    </div>
+
+    <div class="col-md-9">
+        <div class="card mb-3">
+            <div class="card-header fw-bold">Dados Pessoais</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4"><strong>CPF:</strong> {{ pessoa.cpf|default:"—" }}</div>
+                    <div class="col-md-4"><strong>RG:</strong> {{ pessoa.rg|default:"—" }}</div>
+                    <div class="col-md-4"><strong>Nascimento:</strong> {{ pessoa.data_nascimento|date:"d/m/Y"|default:"—" }}</div>
+                    <div class="col-md-4 mt-2"><strong>Sexo:</strong> {{ pessoa.get_sexo_display }}</div>
+                    <div class="col-md-4 mt-2"><strong>Estado civil:</strong> {{ pessoa.get_estado_civil_display|default:"—" }}</div>
+                    <div class="col-md-4 mt-2"><strong>Nacionalidade:</strong> {{ pessoa.nacionalidade|default:"—" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header fw-bold">Contato</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4"><strong>Telefone:</strong> {{ pessoa.telefone|default:"—" }}</div>
+                    <div class="col-md-4"><strong>Celular:</strong> {{ pessoa.celular|default:"—" }}</div>
+                    <div class="col-md-4"><strong>E-mail:</strong> {{ pessoa.email|default:"—" }}</div>
+                </div>
+            </div>
+        </div>
+
+        {% if pessoa.empresas.exists or pessoa.organizacoes.exists %}
+        <div class="card mb-3">
+            <div class="card-header fw-bold">Vínculos</div>
+            <div class="card-body">
+                {% if pessoa.empresas.exists %}
+                    <strong>Empresas:</strong>
+                    {% for e in pessoa.empresas.all %}
+                        <span class="badge bg-primary me-1">{{ e }}</span>
+                    {% endfor %}<br>
+                {% endif %}
+                {% if pessoa.organizacoes.exists %}
+                    <strong class="mt-2 d-block">Organizações:</strong>
+                    {% for o in pessoa.organizacoes.all %}
+                        <span class="badge bg-success me-1">{{ o }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if pessoa.observacoes %}
+        <div class="card">
+            <div class="card-header fw-bold">Observações</div>
+            <div class="card-body">{{ pessoa.observacoes|linebreaks }}</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
