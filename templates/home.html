@@ -1,21 +1,14 @@
 {% extends 'base.html' %}
-{% block title %}Início — Sistema de Gestão{% endblock %}
+{% block title %}TAIPAN{% endblock %}
+{% block page_title %}<i class="bi bi-speedometer2"></i> Dashboard{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0">
-        <i class="bi bi-speedometer2"></i> Dashboard
-    </h4>
-    <small class="text-muted">
-        Bem-vindo, <strong>{{ user.get_full_name|default:user.username }}</strong>
-    </small>
-</div>
 
 <!-- Totais -->
-<div class="row g-3 mb-4">
+<div class="row g-3">
     <div class="col-md-3">
         <a href="{% url 'pessoas:lista' %}" class="text-decoration-none">
-            <div class="card border-primary h-100">
+            <div class="card border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
                     <i class="bi bi-people fs-1 text-primary"></i>
                     <div>
@@ -28,7 +21,7 @@
     </div>
     <div class="col-md-3">
         <a href="{% url 'pessoas:empresa_lista' %}" class="text-decoration-none">
-            <div class="card border-success h-100">
+            <div class="card border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
                     <i class="bi bi-building fs-1 text-success"></i>
                     <div>
@@ -41,7 +34,7 @@
     </div>
     <div class="col-md-3">
         <a href="{% url 'pessoas:organizacao_lista' %}" class="text-decoration-none">
-            <div class="card border-warning h-100">
+            <div class="card border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
                     <i class="bi bi-diagram-3 fs-1 text-warning"></i>
                     <div>
@@ -54,7 +47,7 @@
     </div>
     <div class="col-md-3">
         <a href="{% url 'documentos:lista' %}" class="text-decoration-none">
-            <div class="card border-danger h-100">
+            <div class="card border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
                     <i class="bi bi-file-earmark-text fs-1 text-danger"></i>
                     <div>
@@ -65,12 +58,9 @@
             </div>
         </a>
     </div>
-</div>
-
-<div class="row g-3 mb-4">
     <div class="col-md-4">
         <a href="{% url 'registros:fato_lista' %}" class="text-decoration-none">
-            <div class="card border-secondary h-100">
+            <div class="card border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
                     <i class="bi bi-calendar-event fs-1 text-secondary"></i>
                     <div>
@@ -83,7 +73,7 @@
     </div>
     <div class="col-md-4">
         <a href="{% url 'registros:relatorio_lista' %}" class="text-decoration-none">
-            <div class="card border-info h-100">
+            <div class="card border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
                     <i class="bi bi-journal-text fs-1 text-info"></i>
                     <div>
@@ -96,7 +86,7 @@
     </div>
     <div class="col-md-4">
         <a href="{% url 'registros:memoria_lista' %}" class="text-decoration-none">
-            <div class="card h-100" style="border-color: #8e44ad;">
+            <div class="card border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
                     <i class="bi bi-bookmark-star fs-1" style="color:#8e44ad;"></i>
                     <div>
@@ -111,9 +101,9 @@
 
 <!-- Memórias fixadas -->
 {% if memorias_fixadas %}
-<div class="card mb-4 border-warning">
-    <div class="card-header bg-warning bg-opacity-10 fw-bold">
-        <i class="bi bi-pin-angle-fill text-warning"></i> Memórias Fixadas
+<div class="card border-0">
+    <div class="card-header">
+        <i class="bi bi-pin-angle-fill"></i> Memórias Fixadas
     </div>
     <div class="card-body">
         <div class="row g-2">
@@ -137,14 +127,13 @@
 </div>
 {% endif %}
 
-<!-- Atividade recente -->
-<div class="row g-3">
+<!-- Atividade recente — flex:1 para preencher o espaço -->
+<div class="row g-3 flex-fill">
 
-    <!-- Pessoas recentes -->
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-header fw-bold">
-                <i class="bi bi-clock-history text-primary"></i> Pessoas recentes
+    <div class="col-md-4 d-flex flex-column">
+        <div class="card border-0 flex-fill">
+            <div class="card-header">
+                <i class="bi bi-clock-history"></i> Pessoas recentes
             </div>
             <ul class="list-group list-group-flush">
                 {% for p in pessoas_recentes %}
@@ -155,17 +144,18 @@
                     <small class="text-muted">{{ p.criado_em|date:"d/m" }}</small>
                 </li>
                 {% empty %}
-                <li class="list-group-item text-muted small">Nenhuma pessoa cadastrada.</li>
+                <li class="list-group-item text-muted small py-4 text-center">
+                    Nenhuma pessoa cadastrada.
+                </li>
                 {% endfor %}
             </ul>
         </div>
     </div>
 
-    <!-- Fatos recentes -->
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-header fw-bold">
-                <i class="bi bi-clock-history text-secondary"></i> Fatos recentes
+    <div class="col-md-4 d-flex flex-column">
+        <div class="card border-0 flex-fill">
+            <div class="card-header">
+                <i class="bi bi-clock-history"></i> Fatos recentes
             </div>
             <ul class="list-group list-group-flush">
                 {% for f in fatos_recentes %}
@@ -176,35 +166,36 @@
                     <small class="text-muted">{{ f.data_fato|date:"d/m" }}</small>
                 </li>
                 {% empty %}
-                <li class="list-group-item text-muted small">Nenhum fato registrado.</li>
+                <li class="list-group-item text-muted small py-4 text-center">
+                    Nenhum fato registrado.
+                </li>
                 {% endfor %}
             </ul>
         </div>
     </div>
 
-    <!-- Documentos recentes -->
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-header fw-bold">
-                <i class="bi bi-clock-history text-danger"></i> Documentos recentes
+    <div class="col-md-4 d-flex flex-column">
+        <div class="card border-0 flex-fill">
+            <div class="card-header">
+                <i class="bi bi-clock-history"></i> Documentos recentes
             </div>
             <ul class="list-group list-group-flush">
                 {% for doc in docs_recentes %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <a href="{% url 'documentos:detalhe' doc.pk %}" class="text-decoration-none">
-                        {{ doc.titulo|truncatechars:28 }}
+                        {{ doc.titulo|truncatechars:24 }}
                     </a>
-                    <small class="text-muted">
-                        <span class="badge bg-secondary">{{ doc.get_tipo_display }}</span>
-                    </small>
+                    <span class="badge bg-secondary">{{ doc.get_tipo_display }}</span>
                 </li>
                 {% empty %}
-                <li class="list-group-item text-muted small">Nenhum documento cadastrado.</li>
+                <li class="list-group-item text-muted small py-4 text-center">
+                    Nenhum documento cadastrado.
+                </li>
                 {% endfor %}
             </ul>
         </div>
     </div>
 
 </div>
-{% endblock %}
 
+{% endblock %}

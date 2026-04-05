@@ -4,140 +4,505 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Sistema de Gestão{% endblock %}</title>
+    <title>{% block title %}Sistema{% endblock %}</title>
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">
-    <link href="{% static 'css/select2.min.css' %}" rel="stylesheet">
-    <style>
-        body { background-color: #f8f9fa; }
-        .sidebar { min-height: 100vh; background-color: #212529; }
-        .sidebar .nav-link { color: #adb5bd; }
-        .sidebar .nav-link:hover { color: #fff; }
-        .sidebar .nav-link.active { color: #fff; background-color: #0d6efd; border-radius: 6px; }
-        .sidebar .nav-link i { margin-right: 8px; }
-    </style>
-    <!-- Inicializar Select2 em todos os campos ManyToMany. Para marcar/desmascar relacionamento -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('select[multiple]').forEach(function(el) {
-            $(el).select2({
-                language: 'pt-BR',
-                placeholder: 'Selecione...',
-                allowClear: true,
-                width: '100%',
-            });
-        });
-    });
-    </script>
-    <script>
-    $(document).ready(function() {
-        $('select[multiple]').select2({
-            language: 'pt-BR',
-            placeholder: 'Selecione...',
-            allowClear: true,
-            width: '100%',
-        });
-    });
-    </script>
+
+<style>
+    /* ── Variáveis de cor ───────────────────────────── */
+    :root {
+        --azul-escuro:  #0a1628;
+        --azul-medio:   #0d2137;
+        --azul-primario:#1565c0;
+        --azul-claro:   #1e88e5;
+        --azul-accent:  #42a5f5;
+        --texto-sidebar:#b0bec5;
+        --texto-active: #ffffff;
+        --sidebar-width: 240px;
+    }
+
+    /* ── Reset geral ────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    body {
+        background-color: #f0f4f8;
+        background-image: url("{% static 'img/bg_circuito.svg' %}");
+        background-repeat: repeat;
+        background-size: 400px;
+        background-attachment: fixed;
+    }
+
+    /* ── Layout principal ───────────────────────────── */
+    .layout-wrapper {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* ── Sidebar ────────────────────────────────────── */
+    .sidebar {
+        width: var(--sidebar-width);
+        min-height: 100vh;
+        background: linear-gradient(180deg, var(--azul-escuro) 0%, var(--azul-medio) 100%);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 100;
+        box-shadow: 3px 0 15px rgba(0,0,0,0.3);
+    }
+
+    .sidebar-header {
+        padding: 20px 16px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        text-align: center;
+    }
+
+    .sidebar-header img.logo-marca {
+        max-height: 100px;
+        max-width: 200px;
+        width: 100%;
+        object-fit: contain;
+        margin-bottom: 10px;
+    }
+
+    .sidebar-header .sistema-nome {
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .sidebar-nav {
+        flex: 1;
+        padding: 12px 10px;
+        overflow-y: auto;
+    }
+
+    .sidebar .nav-link {
+        color: var(--texto-sidebar);
+        border-radius: 8px;
+        padding: 9px 12px;
+        margin-bottom: 2px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .sidebar .nav-link:hover {
+        color: var(--texto-active);
+        background-color: rgba(255,255,255,0.08);
+    }
+
+    .sidebar .nav-link.active {
+        color: var(--texto-active);
+        background-color: var(--azul-primario);
+        box-shadow: 0 2px 8px rgba(21,101,192,0.4);
+    }
+
+    .sidebar .nav-link i {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+    }
+
+    .sidebar .nav-section-label {
+        color: rgba(176,190,197,0.5);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        padding: 12px 12px 4px;
+    }
+
+    .sidebar-footer {
+        padding: 16px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        text-align: center;
+    }
+
+    .sidebar-footer img.logo-cliente {
+        max-height: 50px;
+        max-width: 160px;
+        object-fit: contain;
+        opacity: 0.85;
+        margin-bottom: 6px;
+    }
+
+    .sidebar-footer .cliente-nome {
+        color: rgba(176,190,197,0.6);
+        font-size: 10px;
+    }
+
+    .sidebar-footer .btn-sair {
+        color: #ef9a9a;
+        font-size: 13px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 8px;
+        padding: 6px;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+
+    .sidebar-footer .btn-sair:hover {
+        background-color: rgba(239,154,154,0.15);
+        color: #ef5350;
+    }
+
+    /* ── Área principal ─────────────────────────────── */
+    .main-wrapper {
+        margin-left: var(--sidebar-width);
+        width: calc(100% - var(--sidebar-width));
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ── Topbar ─────────────────────────────────────── */
+    .topbar {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 12px 20px;
+        margin: 20px 20px 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        flex-shrink: 0;
+    }
+
+    .topbar .page-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--azul-escuro);
+        margin: 0;
+    }
+
+    .topbar .usuario-info {
+        font-size: 13px;
+        color: #607d8b;
+    }
+
+    .topbar .usuario-info strong {
+        color: var(--azul-primario);
+    }
+
+    /* ── Conteúdo central — cresce para preencher ───── */
+    .main-content {
+        flex: 1;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    /* ── Rodapé fixo no final da janela ─────────────── */
+    .page-footer {
+        flex-shrink: 0;
+        padding: 12px 20px;
+        border-top: 1px solid rgba(0,0,0,0.08);
+        text-align: center;
+        font-size: 12px;
+        color: #90a4ae;
+        background: rgba(255,255,255,0.6);
+        backdrop-filter: blur(4px);
+    }
+
+    .page-footer a {
+        color: var(--azul-claro);
+        text-decoration: none;
+    }
+
+    .page-footer a:hover {
+        text-decoration: underline;
+    }
+
+    /* ── Cards ──────────────────────────────────────── */
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        background: rgba(255,255,255,0.95);
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, var(--azul-primario), var(--azul-claro));
+        color: white;
+        border-radius: 12px 12px 0 0 !important;
+        border: none;
+        padding: 12px 20px;
+    }
+
+    /* ── Tabela que cresce para preencher espaço ─────── */
+    .tabela-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: rgba(255,255,255,0.95);
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        overflow: hidden;
+        min-height: 0;
+    }
+
+    .tabela-wrapper .table {
+        margin-bottom: 0;
+        width: 100%;
+    }
+
+    .tabela-wrapper .table-responsive {
+        flex: 1;
+    }
+
+    .tabela-info {
+        padding: 10px 16px;
+        font-size: 12px;
+        color: #90a4ae;
+        border-top: 1px solid #f0f0f0;
+        flex-shrink: 0;
+    }
+
+    /* ── Cabeçalho ordenável ─────────────────────────────────── */
+    .table thead th.sortable {
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+        transition: background-color 0.15s;
+    }
+
+    .table thead th.sortable:hover {
+        background-color: #1a3a5c;
+    }
+
+    .table thead th.sortable .sort-icon::before {
+        content: " ⇅";
+        opacity: 0.4;
+        font-size: 11px;
+    }
+
+    .table thead th.sortable.sort-asc .sort-icon::before {
+        content: " ▲";
+        opacity: 1;
+        color: #42a5f5;
+    }
+
+    .table thead th.sortable.sort-desc .sort-icon::before {
+        content: " ▼";
+        opacity: 1;
+        color: #42a5f5;
+    }
+
+    /* ── Tabela com linhas zebradas ──────────────────── */
+    .table tbody tr:nth-child(even) {
+        background-color: #f8faff;
+    }
+
+    .table tbody tr:hover {
+        background-color: #e8f0fe;
+    }
+
+    /* ── Alertas e botões ────────────────────────────── */
+    .alert { border-radius: 10px; border: none; }
+
+    .btn-primary {
+        background: var(--azul-primario);
+        border-color: var(--azul-primario);
+    }
+
+    .btn-primary:hover {
+        background: var(--azul-claro);
+        border-color: var(--azul-claro);
+    }
+
+    .table thead.table-dark th {
+        background: var(--azul-escuro);
+    }
+
+    /* ── Overlay circuito ────────────────────────────── */
+    .circuit-overlay {
+        position: fixed;
+        top: 0;
+        left: var(--sidebar-width);
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        opacity: 0.05;
+        z-index: 0;
+        background-image: url("{% static 'img/bg_circuito.svg' %}");
+        background-repeat: repeat;
+        background-size: 300px;
+    }
+
+    .main-wrapper { position: relative; z-index: 1; }
+</style>
+
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
 {% if user.is_authenticated %}
-<div class="container-fluid">
-    <div class="row">
+<div class="layout-wrapper">
 
-        <!-- Sidebar -->
-        <nav class="col-md-2 sidebar px-3 py-4">
-            <div class="text-white mb-4">
-                <h6 class="fw-bold">Sistema de Gestão</h6>
-                <small class="text-muted">{{ user.get_full_name|default:user.username }}</small>
-            </div>
-            <ul class="nav flex-column gap-1">
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <img src="{% static 'img/logo_maior.png' %}" alt="Logo" class="logo-marca">
+            <div class="sistema-nome">SISTEMA TAIPAN</div>
+        </div>
+
+        <div class="sidebar-nav">
+            <div class="nav-section-label">Principal</div>
+            <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="/">
-                        <i class="bi bi-house"></i> Início
+                    <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+                       href="{% url 'pessoas:home' %}">
+                        <i class="bi bi-speedometer2"></i> Dashboard
                     </a>
                 </li>
+            </ul>
+
+            <div class="nav-section-label">Cadastros</div>
+            <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link {% if 'pessoas' in request.path %}active{% endif %}" href="{% url 'pessoas:lista' %}">
+                    <a class="nav-link {% if 'pessoas' in request.path and 'empresas' not in request.path and 'organizacoes' not in request.path %}active{% endif %}"
+                       href="{% url 'pessoas:lista' %}">
                         <i class="bi bi-people"></i> Pessoas
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if 'empresas' in request.path %}active{% endif %}" href="{% url 'pessoas:empresa_lista' %}">
+                    <a class="nav-link {% if 'empresas' in request.path %}active{% endif %}"
+                       href="{% url 'pessoas:empresa_lista' %}">
                         <i class="bi bi-building"></i> Empresas
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if 'organizacoes' in request.path %}active{% endif %}" href="{% url 'pessoas:organizacao_lista' %}">
+                    <a class="nav-link {% if 'organizacoes' in request.path %}active{% endif %}"
+                       href="{% url 'pessoas:organizacao_lista' %}">
                         <i class="bi bi-diagram-3"></i> Organizações
                     </a>
                 </li>
+            </ul>
+
+            <div class="nav-section-label">Registros</div>
+            <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link {% if 'documentos' in request.path %}active{% endif %}" href="{% url 'documentos:lista' %}">
+                    <a class="nav-link {% if 'documentos' in request.path %}active{% endif %}"
+                       href="{% url 'documentos:lista' %}">
                         <i class="bi bi-file-earmark-text"></i> Documentos
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if 'fatos' in request.path %}active{% endif %}" href="{% url 'registros:fato_lista' %}">
+                    <a class="nav-link {% if 'fatos' in request.path %}active{% endif %}"
+                       href="{% url 'registros:fato_lista' %}">
                         <i class="bi bi-calendar-event"></i> Fatos
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if 'relatorios' in request.path %}active{% endif %}" href="{% url 'registros:relatorio_lista' %}">
+                    <a class="nav-link {% if 'relatorios' in request.path %}active{% endif %}"
+                       href="{% url 'registros:relatorio_lista' %}">
                         <i class="bi bi-journal-text"></i> Relatórios
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if 'memorias' in request.path %}active{% endif %}" href="{% url 'registros:memoria_lista' %}">
+                    <a class="nav-link {% if 'memorias' in request.path %}active{% endif %}"
+                       href="{% url 'registros:memoria_lista' %}">
                         <i class="bi bi-bookmark-star"></i> Memórias
                     </a>
                 </li>
-                {% if user.is_staff %}
-                <li class="nav-item mt-3">
+            </ul>
+
+            {% if user.is_staff %}
+            <div class="nav-section-label">Administração</div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
                     <a class="nav-link" href="/admin/">
                         <i class="bi bi-gear"></i> Painel Admin
                     </a>
                 </li>
-                {% endif %}
             </ul>
-            <div class="pt-4">
-                <a href="{% url 'accounts:logout' %}" class="nav-link text-danger">
-                    <i class="bi bi-box-arrow-left"></i> Sair
-                </a>
-            </div>
-        </nav>
-
-        <!-- Conteúdo principal -->
-        <main class="col-md-10 px-4 py-4">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
             {% endif %}
+        </div>
+
+        <div class="sidebar-footer">
+            <img src="{% static 'img/logo_cliente.png' %}" alt="Cliente" class="logo-cliente">
+            <div class="cliente-nome">Nome Empresa Cliente</div>
+            <a href="{% url 'accounts:logout' %}" class="btn-sair">
+                <i class="bi bi-box-arrow-left"></i> Sair
+            </a>
+        </div>
+    </nav>
+
+    <!-- OVERLAY CIRCUITO -->
+    <div class="circuit-overlay"></div>
+
+    <!-- ÁREA PRINCIPAL -->
+    <div class="main-wrapper">
+
+        <!-- Topbar -->
+        <div class="topbar">
+            <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
+            <div class="usuario-info">
+                <i class="bi bi-person-circle"></i>
+                <strong>{{ user.get_full_name|default:user.username }}</strong>
+                &nbsp;·&nbsp;
+                {{ user.groups.first.name|default:"Usuário" }}
+            </div>
+        </div>
+
+        <!-- Mensagens -->
+        {% if messages %}
+        <div style="padding: 0 20px;">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Conteúdo da página -->
+        <div class="main-content">
             {% block content %}{% endblock %}
-        </main>
+        </div>
+
+        <!-- Rodapé sempre no final -->
+        <div class="page-footer">
+            Desenvolvido por <strong>M@rkitoWB</strong>
+            &nbsp;·&nbsp; Python Developer
+            &nbsp;·&nbsp;
+            <a href="https://linkedin.com/in/marcusviniciuswb/" target="_blank">
+                <i class="bi bi-linkedin"></i> LinkedIn
+            </a>
+            &nbsp;·&nbsp; &copy; {% now "Y" %} &nbsp;·&nbsp; v1.0.0
+        </div>
 
     </div>
 </div>
 
 {% else %}
-
-<!-- Usuário não autenticado — exibe o conteúdo sem sidebar -->
-<div class="container-fluid">
-    {% block content_unauth %}{% endblock %}
-</div>
-
+    {% block content_unauthenticated %}{% endblock %}
 {% endif %}
+
+
 
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'js/select2.min.js' %}"></script>
-<script src="{% static 'js/select2-pt-BR.js' %}"></script>
+
 {% block extra_js %}{% endblock %}
 </body>
 </html>

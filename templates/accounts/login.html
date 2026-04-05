@@ -1,41 +1,196 @@
-{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login — Taipan</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
 
-{% block title %}Login — Sistema de Gestão{% endblock %}
+        body {
+            background-color: #0a1628;
+            background-image: url("{% static 'img/bg_circuito.svg' %}");
+            background-repeat: repeat;
+            background-size: 300px;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
-{% block content_unauth %}
-<div class="min-vh-100 d-flex align-items-center justify-content-center">
-    <div class="card shadow-sm" style="width: 100%; max-width: 400px;">
-        <div class="card-body p-4">
+        .login-wrapper {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
 
-            <h4 class="card-title text-center mb-4">
-                <i class="bi bi-shield-lock text-primary"></i>
-                Sistema de Gestão
-            </h4>
+        .login-card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #0a1628, #1565c0);
+            padding: 32px 32px 24px;
+            text-align: center;
+        }
+
+        .login-header img {
+            max-height: 200px;
+            max-width: 320px;
+            object-fit: contain;
+            margin-bottom: -20px;
+        }
+
+        .login-header .sistema-nome {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .login-header .sistema-subtitulo {
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .login-body {
+            padding: 32px;
+        }
+
+        .login-body .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #37474f;
+        }
+
+        .login-body .form-control {
+            border-radius: 8px;
+            border: 1.5px solid #e0e0e0;
+            padding: 10px 14px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .login-body .form-control:focus {
+            border-color: #1565c0;
+            box-shadow: 0 0 0 3px rgba(21,101,192,0.12);
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #1565c0, #1e88e5);
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            transition: all 0.2s;
+            width: 100%;
+            color: white;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #0d47a1, #1565c0);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(21,101,192,0.3);
+            color: white;
+        }
+
+        .login-footer {
+            background: #f8f9fa;
+            padding: 14px 32px;
+            text-align: center;
+            border-top: 1px solid #f0f0f0;
+            font-size: 11px;
+            color: #90a4ae;
+        }
+
+        .login-footer a {
+            color: #1e88e5;
+            text-decoration: none;
+        }
+
+        .cadeado-icon {
+            font-size: 36px;
+            color: rgba(255,255,255,0.3);
+            display: block;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <!-- Cabeçalho com logo -->
+        <div class="login-header">
+            <img src="{% static 'img/logo_maior.png' %}" alt="Logo">
+            <div class="sistema-subtitulo">
+                <i class="bi bi-shield-lock"></i>
+                Acesso restrito — Apenas usuários autorizados
+            </div>
+        </div>
+
+        <!-- Formulário -->
+        <div class="login-body">
 
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-danger">{{ message }}</div>
+                    <div class="alert alert-danger rounded-3 py-2 mb-3" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>{{ message }}
+                    </div>
                 {% endfor %}
             {% endif %}
 
             <form method="post">
                 {% csrf_token %}
                 <div class="mb-3">
-                    <label class="form-label">Usuário</label>
+                    <label class="form-label">
+                        <i class="bi bi-person text-primary"></i> Usuário
+                    </label>
                     <input type="text" name="username" class="form-control"
                            placeholder="Digite seu usuário" autofocus required>
                 </div>
                 <div class="mb-4">
-                    <label class="form-label">Senha</label>
+                    <label class="form-label">
+                        <i class="bi bi-lock text-primary"></i> Senha
+                    </label>
                     <input type="password" name="password" class="form-control"
                            placeholder="Digite sua senha" required>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-box-arrow-in-right"></i> Entrar
+                <button type="submit" class="btn-login">
+                    <i class="bi bi-box-arrow-in-right me-2"></i> Entrar
                 </button>
             </form>
 
         </div>
+
+        <!-- Rodapé do card -->
+        <div class="login-footer">
+            <!-- ✏️ SEUS DADOS -->
+            Desenvolvido por <strong>M@rkitoWB</strong> · Python Developer ·
+            <a href="https://linkedin.com/in/marcusviniciuswb/" target="_blank">
+                <i class="bi bi-linkedin"></i> LinkedIn
+            </a>
+            &nbsp;·&nbsp; &copy; {% now "Y" %}
+        </div>
+
     </div>
 </div>
-{% endblock %}
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>
