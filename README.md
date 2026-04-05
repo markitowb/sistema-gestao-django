@@ -1,10 +1,13 @@
-# 🗂️ Sistema de Gestão de Informações
+# Sistema de Gestão de Informações - Taipan
 
-Sistema web local desenvolvido em Python/Django para gestão
-de pessoas, empresas, organizações, documentos e registros,
+Sistema web local desenvolvido em Python/Django para gestão de pessoas, 
+empresas, organizações, documentos e registros,
 com geração de PDF classificado conforme a LAI e LGPD.
+O nome criado foi inspirado na cobra taipan-ocidental, encontrada na região da 
+Austrália, ela é capaz de matar até 100 (cem) pessoas com apenas uma 
+gota de seu veneno.
 
-## 🚀 Tecnologias utilizadas
+## Tecnologias utilizadas
 
 - Python 3.12
 - Django 4.x
@@ -13,7 +16,7 @@ com geração de PDF classificado conforme a LAI e LGPD.
 - ReportLab (geração de PDF)
 - Select2
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 - Autenticação com controle de acesso por grupos (Admin/Operador)
 - CRUD completo de Pessoas, Empresas e Organizações
@@ -24,7 +27,7 @@ com geração de PDF classificado conforme a LAI e LGPD.
 - Dashboard com totais e atividade recente
 - Sistema 100% offline — sem dependência de internet
 
-## 🔧 Como executar localmente
+## Como executar localmente
 
 1. Clone o repositório
 ```bash
@@ -66,10 +69,10 @@ com geração de PDF classificado conforme a LAI e LGPD.
 
 8. Acesse http://127.0.0.1:8000
 
-## 📋 Requisitos
+## Requisitos
 
 Veja o arquivo `requirements.txt`
 
-## 👨‍💻 Autor
+## Autor
 
 M@rkitoWB — [LinkedIn](https://www.linkedin.com/in/marcusviniciuswb/)
