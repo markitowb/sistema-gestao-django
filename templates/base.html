@@ -7,6 +7,7 @@
     <title>{% block title %}Sistema{% endblock %}</title>
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'css/select2.min.css' %}" rel="stylesheet">
 
 <style>
     /* ── Variáveis de cor ───────────────────────────── */
@@ -502,6 +503,80 @@
 
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/select2.min.js' %}"></script>
+<script src="{% static 'js/select2-pt-BR.js' %}"></script>
+
+<script>
+$(document).ready(function() {
+    $('select[multiple]').select2({
+        language: 'pt-BR',
+        placeholder: 'Selecione...',
+        allowClear: true,
+        width: '100%',
+    });
+});
+
+// ── Ordenação de tabelas por coluna ───────────────────────
+$(document).on('click', 'thead th.sortable', function() {
+    const $th = $(this);
+    const $tabela = $th.closest('table');
+    const idx = $th.index();
+    const asc = !$th.hasClass('sort-asc');
+// Resetar todos os cabeçalhos desta tabela
+    $tabela.find('thead th').removeClass('sort-asc sort-desc');
+// Marcar o cabeçalho clicado
+    $th.addClass(asc ? 'sort-asc' : 'sort-desc');
+// Coletar e ordenar as linhas
+    const $tbody = $tabela.find('tbody');
+    const $linhas = $tbody.find('tr').toArray();
+    $linhas.sort(function(a, b) {
+        const $tdA = $(a).find('td').eq(idx);
+        const $tdB = $(b).find('td').eq(idx);
+
+        /* // Pegar texto limpo — ignora badges e ícones
+        let va = $tdA.clone().find('span.badge, img').remove().end().text().trim().toLowerCase();
+        let vb = $tdB.clone().find('span.badge, img').remove().end().text().trim().toLowerCase(); */
+
+// Para coluna de ID — pegar o texto do badge diretamente
+        let va, vb;
+        if ($tdA.find('span.badge').length && idx === 0) {
+            va = $tdA.find('span.badge').first().text().trim();
+            vb = $tdB.find('span.badge').first().text().trim();
+        } else {
+            va = $tdA.clone().find('span.badge, img').remove().end().text().trim().toLowerCase();
+            vb = $tdB.clone().find('span.badge, img').remove().end().text().trim().toLowerCase();
+        }
+
+// Tentar ordenar como número (incluindo IDs)
+        const na = parseFloat(va.replace(/[^\d,.-]/g, '').replace(',', '.'));
+        const nb = parseFloat(vb.replace(/[^\d,.-]/g, '').replace(',', '.'));
+        if (!isNaN(na) && !isNaN(nb)) {
+            return asc ? na - nb : nb - na;
+        }
+
+// Tentar ordenar como data (dd/mm/aaaa)
+        const reData = /^(\d{2})\/(\d{2})\/(\d{4})/;
+        const da = va.match(reData);
+        const db = vb.match(reData);
+        if (da && db) {
+            const dtA = new Date(`${da[3]}-${da[2]}-${da[1]}`);
+            const dtB = new Date(`${db[3]}-${db[2]}-${db[1]}`);
+            return asc ? dtA - dtB : dtB - dtA;
+        }
+
+// Ordenar como texto (alfabética, suporte ao português)
+        return asc
+            ? va.localeCompare(vb, 'pt-BR', {sensitivity: 'base'})
+            : vb.localeCompare(va, 'pt-BR', {sensitivity: 'base'});
+        });
+
+// Reinserir as linhas ordenadas
+    $.each($linhas, function(i, linha) {
+        $tbody.append(linha);
+    });
+});
+
+</script>
 
 {% block extra_js %}{% endblock %}
 </body>

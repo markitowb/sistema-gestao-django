@@ -27,7 +27,7 @@
 
 <!-- Tabela -->
 {% if pessoas %}
-<div class="table-responsive">
+<!-- <div class="table-responsive">
     <table class="table table-hover align-middle">
         <thead class="table-dark">
             <tr>
@@ -67,8 +67,68 @@
             {% endfor %}
         </tbody>
     </table>
+</div> -->
+
+<div class="tabela-wrapper">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th class="sortable">ID <span class="sort-icon"></span></th>
+                    <th class="sortable">Nome <span class="sort-icon"></span></th>
+                    <th class="sortable">CPF <span class="sort-icon"></span></th>
+                    <th class="sortable">Telefone <span class="sort-icon"></span></th>
+                    <th class="sortable">Cidade/UF <span class="sort-icon"></span></th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pessoa in pessoas %}
+                <tr>
+                    <td><span class="badge bg-secondary">{{ pessoa.pk }}</span></td>
+                    <td>
+                        {% if pessoa.foto %}
+                            <img src="{{ pessoa.foto.url }}" class="rounded-circle me-2"
+                                 width="32" height="32" style="object-fit:cover;">
+                        {% endif %}
+                        <a href="{% url 'pessoas:detalhe' pessoa.pk %}">
+                            {{ pessoa.nome_completo }}
+                        </a>
+                    </td>
+                    <td>{{ pessoa.cpf|default:"—" }}</td>
+                    <td>{{ pessoa.celular|default:pessoa.telefone|default:"—" }}</td>
+                    <td>{{ pessoa.cidade|default:"—" }}{% if pessoa.estado %}/{{ pessoa.estado }}{% endif %}</td>
+                    <td class="text-center">
+                        <a href="{% url 'pessoas:editar' pessoa.pk %}"
+                           class="btn btn-sm btn-outline-primary me-1">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'pessoas:excluir' pessoa.pk %}"
+                           class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-5">
+                        <i class="bi bi-people fs-1 d-block mb-2 opacity-25"></i>
+                        Nenhuma pessoa cadastrada ainda.
+                        <a href="{% url 'pessoas:criar' %}">Cadastre a primeira!</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if pessoas %}
+    <div class="tabela-info">
+        {{ pessoas.count }} registro(s) encontrado(s)
+    </div>
+    {% endif %}
 </div>
-<small class="text-muted">{{ pessoas.count }} registro(s) encontrado(s)</small>
+
+<!-- <small class="text-muted">{{ pessoas.count }} registro(s) encontrado(s)</small> -->
 
 {% else %}
 <div class="alert alert-info">

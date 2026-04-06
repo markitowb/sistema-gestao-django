@@ -22,44 +22,61 @@
     </div>
 </form>
 {% if relatorios %}
-<div class="table-responsive">
-    <table class="table table-hover align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>Título</th>
-                <th>Data de referência</th>
-                <th>Criado por</th>
-                <th>Criado em</th>
-                <th class="text-center">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for rel in relatorios %}
-            <tr>
-                <td>
-                    <a href="{% url 'registros:relatorio_detalhe' rel.pk %}">
-                        {{ rel.titulo }}
-                    </a>
-                </td>
-                <td>{{ rel.data_referencia|date:"d/m/Y"|default:"—" }}</td>
-                <td>{{ rel.criado_por|default:"—" }}</td>
-                <td>{{ rel.criado_em|date:"d/m/Y" }}</td>
-                <td class="text-center">
-                    <a href="{% url 'registros:relatorio_editar' rel.pk %}"
-                       class="btn btn-sm btn-outline-primary me-1">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                    <a href="{% url 'registros:relatorio_excluir' rel.pk %}"
-                       class="btn btn-sm btn-outline-danger">
-                        <i class="bi bi-trash"></i>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="tabela-wrapper">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th class="sortable">ID <span class="sort-icon"></span></th>
+                    <th class="sortable">Título <span class="sort-icon"></span></th>
+                    <th class="sortable">Data referência <span class="sort-icon"></span></th>
+                    <th class="sortable">Criado por <span class="sort-icon"></span></th>
+                    <th class="sortable">Criado em <span class="sort-icon"></span></th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for relatorio in relatorios %}
+                <tr>
+                    <td><span class="badge bg-secondary">{{ relatorio.pk }}</span></td>
+                    <td>
+                        <a href="{% url 'registros:relatorio_detalhe' relatorio.pk %}">
+                            {{ relatorio.titulo }}
+                        </a>
+                    </td>
+                    <td>{{ relatorio.data_referencia|date:"d/m/Y"|default:"—" }}</td>
+                    <td>{{ relatorio.criado_por|default:"—" }}</td>
+                    <td>{{ relatorio.criado_em|date:"d/m/Y H:i" }}</td>
+                    <td class="text-center">
+                        <a href="{% url 'registros:relatorio_editar' relatorio.pk %}"
+                           class="btn btn-sm btn-outline-primary me-1">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'registros:relatorio_excluir' relatorio.pk %}"
+                           class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-5">
+                        <i class="bi bi-journal-text fs-1 d-block mb-2 opacity-25"></i>
+                        Nenhum relatório criado ainda.
+                        <a href="{% url 'registros:relatorio_criar' %}">Crie o primeiro!</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if relatorios %}
+    <div class="tabela-info">{{ relatorios.count }} registro(s) encontrado(s)</div>
+    {% endif %}
 </div>
-<small class="text-muted">{{ relatorios.count }} registro(s) encontrado(s)</small>
+
+<!-- <small class="text-muted">{{ relatorios.count }} registro(s) encontrado(s)</small> -->
+
 {% else %}
 <div class="alert alert-info">
     {% if query %}
