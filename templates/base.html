@@ -505,7 +505,7 @@
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'js/select2.min.js' %}"></script>
 <script src="{% static 'js/select2-pt-BR.js' %}"></script>
-
+<script src="{% static 'js/jquery.mask.min.js' %}"></script>
 <script>
 $(document).ready(function() {
     $('select[multiple]').select2({
@@ -515,6 +515,122 @@ $(document).ready(function() {
         width: '100%',
     });
 });
+
+// ── Máscaras de CPF e CNPJ ─────────────────────────────────
+$('input[name="cpf"]').mask('000.000.000-00', {
+    placeholder: '000.000.000-00'
+});
+
+$('input[name="cnpj"]').mask('00.000.000/0000-00', {
+    placeholder: '00.000.000/0000-00'
+});
+
+$('input[name="cep"]').mask('00000-000', {
+    placeholder: '00000-000'
+});
+
+$('input[name="telefone"], input[name="celular"]').mask('(00) 00000-0000', {
+    placeholder: '(00) 00000-0000'
+});
+
+// ── Validação de CPF ───────────────────────────────────────
+function validarCPF(cpf) {
+    cpf = cpf.replace(/[^\d]/g, '');
+    if (cpf.length !== 11) return false;
+    if (/^(\d)\1+$/.test(cpf)) return false;
+    let soma = 0, resto;
+    for (let i = 1; i <= 9; i++)
+        soma += parseInt(cpf[i-1]) * (11 - i);
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf[9])) return false;
+    soma = 0;
+    for (let i = 1; i <= 10; i++)
+        soma += parseInt(cpf[i-1]) * (12 - i);
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    return resto === parseInt(cpf[10]);
+}
+
+// ── Validação de CNPJ ──────────────────────────────────────
+function validarCNPJ(cnpj) {
+    cnpj = cnpj.replace(/[^\d]/g, '');
+    if (cnpj.length !== 14) return false;
+    if (/^(\d)\1+$/.test(cnpj)) return false;
+    let tamanho = cnpj.length - 2;
+    let numeros = cnpj.substring(0, tamanho);
+    let digitos = cnpj.substring(tamanho);
+    let soma = 0, pos = tamanho - 7;
+    for (let i = tamanho; i >= 1; i--) {
+        soma += parseInt(numeros[tamanho - i]) * pos--;
+        if (pos < 2) pos = 9;
+    }
+    let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado !== parseInt(digitos[0])) return false;
+    tamanho += 1;
+    numeros = cnpj.substring(0, tamanho);
+    soma = 0; pos = tamanho - 7;
+    for (let i = tamanho; i >= 1; i--) {
+        soma += parseInt(numeros[tamanho - i]) * pos--;
+        if (pos < 2) pos = 9;
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    return resultado === parseInt(digitos[1]);
+}
+
+// ── Validar ao sair do campo ───────────────────────────────
+$('input[name="cpf"]').on('blur', function() {
+    const val = $(this).val();
+    if (val && !validarCPF(val)) {
+        $(this).addClass('is-invalid');
+        if (!$(this).next('.invalid-feedback').length) {
+            $(this).after('<div class="invalid-feedback">CPF inválido. Verifique os dígitos.</div>');
+        }
+    } else {
+        $(this).removeClass('is-invalid').addClass('is-valid');
+        $(this).next('.invalid-feedback').remove();
+    }
+});
+
+$('input[name="cnpj"]').on('blur', function() {
+    const val = $(this).val();
+    if (val && !validarCNPJ(val)) {
+        $(this).addClass('is-invalid');
+        if (!$(this).next('.invalid-feedback').length) {
+            $(this).after('<div class="invalid-feedback">CNPJ inválido. Verifique os dígitos.</div>');
+        }
+    } else {
+        $(this).removeClass('is-invalid').addClass('is-valid');
+        $(this).next('.invalid-feedback').remove();
+    }
+});
+
+// ── Bloquear envio do form se CPF/CNPJ inválido ───────────
+$('form').on('submit', function(e) {
+    let valido = true;
+
+    const cpfInput = $(this).find('input[name="cpf"]');
+    if (cpfInput.length && cpfInput.val()) {
+        if (!validarCPF(cpfInput.val())) {
+            cpfInput.addClass('is-invalid');
+            valido = false;
+        }
+    }
+
+    const cnpjInput = $(this).find('input[name="cnpj"]');
+    if (cnpjInput.length && cnpjInput.val()) {
+        if (!validarCNPJ(cnpjInput.val())) {
+            cnpjInput.addClass('is-invalid');
+            valido = false;
+        }
+    }
+
+    if (!valido) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+});
+
 
 // ── Ordenação de tabelas por coluna ───────────────────────
 $(document).on('click', 'thead th.sortable', function() {
