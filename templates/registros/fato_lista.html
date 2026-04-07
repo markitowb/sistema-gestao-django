@@ -22,56 +22,75 @@
     </div>
 </form>
 {% if fatos %}
-<div class="table-responsive">
-    <table class="table table-hover align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>Título</th>
-                <th>Tipo</th>
-                <th>Data/hora</th>
-                <th>Local</th>
-                <th>Confidencial</th>
-                <th class="text-center">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for fato in fatos %}
-            <tr>
-                <td>
-                    <a href="{% url 'registros:fato_detalhe' fato.pk %}">
-                        {{ fato.titulo }}
-                    </a>
-                </td>
-                <td>{{ fato.get_tipo_display }}</td>
-                <td>{{ fato.data_fato|date:"d/m/Y H:i" }}</td>
-                <td>{{ fato.local|default:"—" }}</td>
-                <td>
-                    {% if fato.confidencial %}
-                        <span class="badge bg-danger">Sim</span>
-                    {% else %}
-                        <span class="badge bg-secondary">Não</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    <a href="{% url 'registros:fato_editar' fato.pk %}"
-                       class="btn btn-sm btn-outline-primary me-1">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                    <a href="{% url 'registros:fato_excluir' fato.pk %}"
-                       class="btn btn-sm btn-outline-danger">
-                        <i class="bi bi-trash"></i>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="tabela-wrapper">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th class="sortable">ID <span class="sort-icon"></span></th>
+                    <th class="sortable">Título <span class="sort-icon"></span></th>
+                    <th class="sortable">Tipo <span class="sort-icon"></span></th>
+                    <th class="sortable">Data/hora <span class="sort-icon"></span></th>
+                    <th class="sortable">Local <span class="sort-icon"></span></th>
+                    <th class="sortable">Confidencial <span class="sort-icon"></span></th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fato in fatos %}
+                <tr>
+                    <td><span class="badge bg-secondary">{{ fato.pk }}</span></td>
+                    <td>
+                        <a href="{% url 'registros:fato_detalhe' fato.pk %}">
+                            {{ fato.titulo }}
+                        </a>
+                    </td>
+                    <td>{{ fato.get_tipo_display }}</td>
+                    <td>{{ fato.data_fato|date:"d/m/Y H:i" }}</td>
+                    <td>{{ fato.local|default:"—" }}</td>
+                    <td>
+                        {% if fato.confidencial %}
+                            <span class="badge bg-danger">Sim</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Não</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <a href="{% url 'registros:fato_editar' fato.pk %}"
+                           class="btn btn-sm btn-outline-primary me-1">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'registros:fato_excluir' fato.pk %}"
+                           class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-5">
+                        <i class="bi bi-calendar-event fs-1 d-block mb-2 opacity-25"></i>
+                        Nenhum fato registrado ainda.
+                        <a href="{% url 'registros:fato_criar' %}">Registre o primeiro!</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if fatos %}
+    <div class="tabela-info">{{ fatos.count }} registro(s) encontrado(s)</div>
+    {% endif %}
 </div>
-<small class="text-muted">{{ fatos.count }} registro(s) encontrado(s)</small>
+
+<!-- <small class="text-muted">{{ fatos.count }} registro(s) encontrado(s)</small> -->
+
 {% else %}
 <div class="alert alert-info">
-    {% if query %}Nenhum fato encontrado para "<strong>{{ query }}</strong>".
-    {% else %}Nenhum fato registrado ainda.
+    {% if query %}
+        Nenhum fato encontrado para "<strong>{{ query }}</strong>".
+    {% else %}
+        Nenhum fato registrado ainda.
         <a href="{% url 'registros:fato_criar' %}">Registre o primeiro!</a>
     {% endif %}
 </div>

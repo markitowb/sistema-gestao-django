@@ -22,46 +22,65 @@
     </div>
 </form>
 {% if empresas %}
-<div class="table-responsive">
-    <table class="table table-hover align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>Razão Social</th>
-                <th>CNPJ</th>
-                <th>Situação</th>
-                <th>Cidade/UF</th>
-                <th class="text-center">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for empresa in empresas %}
-            <tr>
-                <td>
-                    <a href="{% url 'pessoas:empresa_detalhe' empresa.pk %}">
-                        {{ empresa }}
-                    </a>
-                </td>
-                <td>{{ empresa.cnpj|default:"—" }}</td>
-                <td><span class="badge bg-{% if empresa.situacao == 'AT' %}success{% else %}secondary{% endif %}">
-                    {{ empresa.get_situacao_display }}</span>
-                </td>
-                <td>{{ empresa.cidade|default:"—" }}{% if empresa.estado %}/{{ empresa.estado }}{% endif %}</td>
-                <td class="text-center">
-                    <a href="{% url 'pessoas:empresa_editar' empresa.pk %}"
-                       class="btn btn-sm btn-outline-primary me-1">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                    <a href="{% url 'pessoas:empresa_excluir' empresa.pk %}"
-                       class="btn btn-sm btn-outline-danger">
-                        <i class="bi bi-trash"></i>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="tabela-wrapper">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th class="sortable">ID <span class="sort-icon"></span></th>
+                    <th class="sortable">Razão Social <span class="sort-icon"></span></th>
+                    <th class="sortable">CNPJ <span class="sort-icon"></span></th>
+                    <th class="sortable">Situação <span class="sort-icon"></span></th>
+                    <th class="sortable">Cidade/UF <span class="sort-icon"></span></th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for empresa in empresas %}
+                <tr>
+                    <td><span class="badge bg-secondary">{{ empresa.pk }}</span></td>
+                    <td>
+                        <a href="{% url 'pessoas:empresa_detalhe' empresa.pk %}">
+                            {{ empresa }}
+                        </a>
+                    </td>
+                    <td>{{ empresa.cnpj|default:"—" }}</td>
+                    <td>
+                        <span class="badge bg-{% if empresa.situacao == 'AT' %}success{% else %}secondary{% endif %}">
+                            {{ empresa.get_situacao_display }}
+                        </span>
+                    </td>
+                    <td>{{ empresa.cidade|default:"—" }}{% if empresa.estado %}/{{ empresa.estado }}{% endif %}</td>
+                    <td class="text-center">
+                        <a href="{% url 'pessoas:empresa_editar' empresa.pk %}"
+                           class="btn btn-sm btn-outline-primary me-1">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'pessoas:empresa_excluir' empresa.pk %}"
+                           class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-5">
+                        <i class="bi bi-building fs-1 d-block mb-2 opacity-25"></i>
+                        Nenhuma empresa cadastrada ainda.
+                        <a href="{% url 'pessoas:empresa_criar' %}">Cadastre a primeira!</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if empresas %}
+    <div class="tabela-info">{{ empresas.count }} registro(s) encontrado(s)</div>
+    {% endif %}
 </div>
-<small class="text-muted">{{ empresas.count }} registro(s) encontrado(s)</small>
+
+<!-- <small class="text-muted">{{ empresas.count }} registro(s) encontrado(s)</small> -->
+
 {% else %}
 <div class="alert alert-info">
     {% if query %}Nenhuma empresa encontrada para "<strong>{{ query }}</strong>".

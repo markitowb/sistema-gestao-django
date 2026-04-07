@@ -22,53 +22,59 @@
     </div>
 </form>
 {% if memorias %}
-<div class="table-responsive">
-    <table class="table table-hover align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>Título</th>
-                <th>Data</th>
-                <th>Fixada</th>
-                <th>Criado por</th>
-                <th class="text-center">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for mem in memorias %}
-            <tr>
-                <td>
-                    <a href="{% url 'registros:memoria_detalhe' mem.pk %}">
-                        {% if mem.fixada %}
-                            <i class="bi bi-pin-fill text-warning me-1"></i>
+{% if memorias %}
+<div class="tabela-wrapper">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th class="sortable">ID <span class="sort-icon"></span></th>
+                    <th class="sortable">Título <span class="sort-icon"></span></th>
+                    <th class="sortable">Data <span class="sort-icon"></span></th>
+                    <th class="sortable">Fixada <span class="sort-icon"></span></th>
+                    <th class="sortable">Criado em <span class="sort-icon"></span></th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for memoria in memorias %}
+                <tr>
+                    <td><span class="badge bg-secondary">{{ memoria.pk }}</span></td>
+                    <td>
+                        <a href="{% url 'registros:memoria_detalhe' memoria.pk %}"
+                           class="text-decoration-none">
+                            {% if memoria.fixada %}
+                                <i class="bi bi-pin-angle-fill text-warning me-1"></i>
+                            {% endif %}
+                            {{ memoria.titulo }}
+                        </a>
+                    </td>
+                    <td>{{ memoria.data_memoria|date:"d/m/Y"|default:"—" }}</td>
+                    <td>
+                        {% if memoria.fixada %}
+                            <span class="badge bg-warning text-dark">Sim</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Não</span>
                         {% endif %}
-                        {{ mem.titulo }}
-                    </a>
-                </td>
-                <td>{{ mem.data_memoria|date:"d/m/Y"|default:"—" }}</td>
-                <td>
-                    {% if mem.fixada %}
-                        <span class="badge bg-warning text-dark">Fixada</span>
-                    {% else %}
-                        <span class="badge bg-secondary">Não</span>
-                    {% endif %}
-                </td>
-                <td>{{ mem.criado_por|default:"—" }}</td>
-                <td class="text-center">
-                    <a href="{% url 'registros:memoria_editar' mem.pk %}"
-                       class="btn btn-sm btn-outline-primary me-1">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                    <a href="{% url 'registros:memoria_excluir' mem.pk %}"
-                       class="btn btn-sm btn-outline-danger">
-                        <i class="bi bi-trash"></i>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    </td>
+                    <td>{{ memoria.criado_em|date:"d/m/Y" }}</td>
+                    <td class="text-center">
+                        <a href="{% url 'registros:memoria_editar' memoria.pk %}"
+                           class="btn btn-sm btn-outline-primary me-1">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'registros:memoria_excluir' memoria.pk %}"
+                           class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="tabela-info">{{ memorias.count }} memória(s) encontrada(s)</div>
 </div>
-<small class="text-muted">{{ memorias.count }} registro(s) encontrado(s)</small>
 {% else %}
 <div class="alert alert-info">
     {% if query %}
@@ -79,5 +85,16 @@
     {% endif %}
 </div>
 {% endif %}
+<!-- <small class="text-muted">{{ memorias.count }} registro(s) encontrado(s)</small> -->
+<!-- {% else %}
+<div class="alert alert-info">
+    {% if query %}
+        Nenhuma memória encontrada para "<strong>{{ query }}</strong>".
+    {% else %}
+        Nenhuma memória registrada ainda.
+        <a href="{% url 'registros:memoria_criar' %}">Registre a primeira!</a>
+    {% endif %}
+</div>
+{% endif %} -->
 {% endblock %}
 

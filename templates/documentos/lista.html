@@ -41,52 +41,67 @@
 </form>
 
 {% if documentos %}
-<div class="table-responsive">
-    <table class="table table-hover align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>Título</th>
-                <th>Tipo</th>
-                <th>Categoria</th>
-                <th>Data</th>
-                <th>Enviado por</th>
-                <th class="text-center">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for doc in documentos %}
-            <tr>
-                <td>
-                    <a href="{% url 'documentos:detalhe' doc.pk %}">
-                        {{ doc.titulo }}
-                    </a>
-                </td>
-                <td>
-                    <span class="badge bg-secondary">{{ doc.get_tipo_display }}</span>
-                </td>
-                <td>{{ doc.get_categoria_display|default:"—" }}</td>
-                <td>{{ doc.data_documento|date:"d/m/Y"|default:"—" }}</td>
-                <td>{{ doc.criado_por|default:"—" }}</td>
-                <td class="text-center">
-                    <a href="{{ doc.arquivo.url }}" target="_blank"
-                       class="btn btn-sm btn-outline-success me-1" title="Abrir arquivo">
-                        <i class="bi bi-eye"></i>
-                    </a>
-                    <a href="{% url 'documentos:editar' doc.pk %}"
-                       class="btn btn-sm btn-outline-primary me-1">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                    <a href="{% url 'documentos:excluir' doc.pk %}"
-                       class="btn btn-sm btn-outline-danger">
-                        <i class="bi bi-trash"></i>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="tabela-wrapper">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th class="sortable">ID <span class="sort-icon"></span></th>
+                    <th class="sortable">Título <span class="sort-icon"></span></th>
+                    <th class="sortable">Tipo <span class="sort-icon"></span></th>
+                    <th class="sortable">Categoria <span class="sort-icon"></span></th>
+                    <th class="sortable">Data <span class="sort-icon"></span></th>
+                    <th class="sortable">Enviado por <span class="sort-icon"></span></th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in documentos %}
+                <tr>
+                    <td><span class="badge bg-secondary">{{ doc.pk }}</span></td>
+                    <td>
+                        <a href="{% url 'documentos:detalhe' doc.pk %}">
+                            {{ doc.titulo }}
+                        </a>
+                    </td>
+                    <td><span class="badge bg-secondary">{{ doc.get_tipo_display }}</span></td>
+                    <td>{{ doc.get_categoria_display|default:"—" }}</td>
+                    <td>{{ doc.data_documento|date:"d/m/Y"|default:"—" }}</td>
+                    <td>{{ doc.criado_por|default:"—" }}</td>
+                    <td class="text-center">
+                        <a href="{{ doc.arquivo.url }}" target="_blank"
+                           class="btn btn-sm btn-outline-success me-1">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="{% url 'documentos:editar' doc.pk %}"
+                           class="btn btn-sm btn-outline-primary me-1">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'documentos:excluir' doc.pk %}"
+                           class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-5">
+                        <i class="bi bi-file-earmark fs-1 d-block mb-2 opacity-25"></i>
+                        Nenhum documento cadastrado ainda.
+                        <a href="{% url 'documentos:criar' %}">Cadastre o primeiro!</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if documentos %}
+    <div class="tabela-info">{{ documentos.count }} documento(s) encontrado(s)</div>
+    {% endif %}
 </div>
-<small class="text-muted">{{ documentos.count }} documento(s) encontrado(s)</small>
+
+<!-- <small class="text-muted">{{ documentos.count }} documento(s) encontrado(s)</small> -->
+
 {% else %}
 <div class="alert alert-info">
     {% if query or tipo %}
