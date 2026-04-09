@@ -3,6 +3,7 @@ venv/
 
 # Variáveis de ambiente e segredos
 .env
+*.env
 
 # Arquivos de mídia (uploads dos usuários)]
 media/
@@ -26,3 +27,9 @@ db.sqlite3
 baixar_estaticos.py
 baixar_select2.py
 backup.bat
+
+# Arquivos de backup do banco
+dados_backup.json
+db.json
+*.backup.json
+fixtures/

@@ -77,10 +77,25 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
+""" DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+    }
+} """
+
+# Migrado de SQLite para PostgreSQL
+DATABASES = {
+    'default': {
+        'ENGINE':   'django.db.backends.postgresql',
+        'NAME':     config('DB_NAME', default='sistema_gestao'),
+        'USER':     config('DB_USER', default='sistema_user'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST':     config('DB_HOST', default='localhost'),
+        'PORT':     config('DB_PORT', default='5432'),
+        'OPTIONS': {
+            'client_encoding': 'UTF8',
+        },
     }
 }
 
@@ -107,9 +122,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
+""" LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC" """
 
 USE_I18N = True
 
@@ -162,3 +176,4 @@ X_FRAME_OPTIONS = 'DENY'
 
 # ── Força HTTPS (apenas se configurar certificado local) ──────
 # SECURE_SSL_REDIRECT = True  # descomente só se usar HTTPS
+
